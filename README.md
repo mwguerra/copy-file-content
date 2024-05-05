@@ -6,7 +6,10 @@
 
 # ![Copy File Content Plugin Icon](src/main/resources/META-INF/pluginIcon.svg) Copy File Content Plugin
 
-The "Copy File Content" plugin enhances your workflow by allowing you to quickly copy the contents of selected files and directories to the clipboard, formatted according to customizable settings.
+## Description
+<!-- Plugin description -->
+Copy File Content is a plugin that enhances your workflow by allowing you to quickly copy the contents of selected files and directories to the clipboard, formatted according to customizable settings.
+<!-- Plugin description end -->
 
 ## Installation
 
@@ -29,6 +32,8 @@ Once the plugin is installed, you can use it to copy file content in the followi
 1. Select the files or directories whose content you want to copy.
 2. Right-click on the selection.
 3. Choose the "Copy File Content to Clipboard" option from the context menu.
+
+Settings can be found searching for `Copy File Content Settings` under `Preferences`.
 
 ## Features
 
