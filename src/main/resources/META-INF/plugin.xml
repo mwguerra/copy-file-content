@@ -1,0 +1,41 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <version>0.0.1</version>
+
+    <id>com.github.mwguerra.copyfilecontent</id>
+    <depends>com.intellij.modules.platform</depends>
+
+    <name>Copy File Content</name>
+    <vendor email="mwguerra@gmail.com" url="https://mwguerra.com">Marcelo W. Guerra</vendor>
+
+    <!-- https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html -->
+    <description><![CDATA[
+    <p>The "Copy File Content" plugin enhances your workflow by allowing you to quickly copy the contents of selected files and directories to the clipboard, formatted according to customizable settings.</p>
+    <h2>This plugin is useful for:</h2>
+    <ul>
+        <li>developers who frequently need to share their code via chat applications</li>
+        <li>developers who needs to copy their code to build context for LLM apps like ChatGPT, Gemini or Sapiens.</li>
+    </ul>
+    <h2>Main features:</h2>
+    <ul>
+        <li>Copy the content of multiple files to the clipboard</li>
+        <li>Customizable text structure, including pre-text, file header text and post-text</li>
+        <li>Configurable file copying constraint, default to 30 files, so you don't experience memory problems if your folder have more files than you anticipated</li>
+        <li>Optionally set filters to specify which file extensions should be copied.</li>
+        <li>Information on thh copied items including number of files copied, total lines, total words and an estimate over the tokens for the copied content (it consider words and some punctuations).</li>
+    </ul>
+    ]]>
+    </description>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <projectConfigurable
+            id="CopyFileContentConfigurable"
+            displayName="Copy File Content Settings"
+            instance="com.github.mwguerra.copyfilecontent.CopyFileContentConfigurable"/>
+    </extensions>
+    <actions>
+        <action id="CopyFileContentContentsAction" class="com.github.mwguerra.copyfilecontent.CopyFileContentAction" text="Copy File Content to Clipboard" description="Copy folder and file content to the clipboard.">
+            <add-to-group group-id="CutCopyPasteGroup"  anchor="after" relative-to-action="CopyPaths"/>
+        </action>
+    </actions>
+</idea-plugin>
