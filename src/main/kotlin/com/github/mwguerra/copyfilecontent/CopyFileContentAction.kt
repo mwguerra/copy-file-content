@@ -37,33 +37,39 @@ class CopyFileContentAction : AnAction() {
             return
         }
 
-        if (settings.state.headerFormat.isNotEmpty()) {
-            val fileContents = mutableListOf<String>().apply {
-                add(settings.state.preText)
+        val fileContents = mutableListOf<String>().apply {
+            add(settings.state.preText)
+        }
+
+        for (file in selectedFiles) {
+            // Check file limit only if the checkbox is selected.
+            if (settings.state.setMaxFileCount && fileCount >= settings.state.fileCountLimit) {
+                notifyFileLimitReached(settings.state.fileCountLimit, project)
+                break
             }
 
-            for (file in selectedFiles) {
-                // Check file limit only if the checkbox is selected.
-                if (settings.state.setMaxFileCount && fileCount >= settings.state.fileCountLimit) {
-                    notifyFileLimitReached(settings.state.fileCountLimit, project)
-                    break
-                }
-                val content = processFile(file, fileContents, project, settings.state.addExtraLineBetweenFiles)
-
-                totalChars += content.length
-                totalLines += content.count { it == '\n' } + 1  // +1 because the last line doesn't end in \n.
-                totalWords += content.split("\\s+".toRegex()).filter { it.isNotEmpty() }.size
-                totalTokens += estimateTokens(content)
+            val content = if (file.isDirectory) {
+                processDirectory(file, fileContents, project, settings.state.addExtraLineBetweenFiles)
+            } else {
+                processFile(file, fileContents, project, settings.state.addExtraLineBetweenFiles)
             }
 
-            fileContents.add(settings.state.postText)
-            copyToClipboard(fileContents.joinToString(separator = "\n"))
+            totalChars += content.length
+            totalLines += content.count { it == '\n' } + 1  // +1 because the last line doesn't end in \n.
+            totalWords += content.split("\\s+".toRegex()).filter { it.isNotEmpty() }.size
+            totalTokens += estimateTokens(content)
+        }
 
-            if (settings.state.showCopyNotification) {
-                JOptionPane.showMessageDialog(null, "Copied $fileCount files.\nTotal characters: $totalChars\nTotal lines: $totalLines\nTotal words: $totalWords\nEstimated tokens: $totalTokens", "Copy Summary", JOptionPane.INFORMATION_MESSAGE)
-            }
-        } else {
-            logger.error("Settings are incomplete or incorrect: ${settings.toString()}")
+        fileContents.add(settings.state.postText)
+        copyToClipboard(fileContents.joinToString(separator = "\n"))
+
+        if (settings.state.showCopyNotification) {
+            JOptionPane.showMessageDialog(
+                null,
+                "Copied $fileCount files.\nTotal characters: $totalChars\nTotal lines: $totalLines\nTotal words: $totalWords\nEstimated tokens: $totalTokens",
+                "Copy Summary",
+                JOptionPane.INFORMATION_MESSAGE
+            )
         }
     }
 
@@ -87,9 +93,7 @@ class CopyFileContentAction : AnAction() {
             }
         }
 
-        if (file.isDirectory) {
-            processDirectory(file, fileContents, project, addExtraLine)
-        } else if (!isBinaryFile(file) && file.length <= 100 * 1024) {
+        if (!isBinaryFile(file) && file.length <= 100 * 1024) {
             val header = settings.state.headerFormat.replace("\$FILE_PATH", fileRelativePath)
             content = readFileContents(file)
             fileContents.add(header)
@@ -104,17 +108,30 @@ class CopyFileContentAction : AnAction() {
         return content
     }
 
-    private fun processDirectory(directory: VirtualFile, fileContents: MutableList<String>, project: Project, addExtraLine: Boolean) {
-        val settings = CopyFileContentSettings.getInstance(project) ?: return
+    private fun processDirectory(directory: VirtualFile, fileContents: MutableList<String>, project: Project, addExtraLine: Boolean): String {
+        val directoryContent = StringBuilder()
+        val settings = CopyFileContentSettings.getInstance(project) ?: return ""
 
         for (childFile in directory.children) {
             if (settings.state.setMaxFileCount && fileCount >= settings.state.fileCountLimit) break
-            processFile(childFile, fileContents, project, addExtraLine)
+            val content = if (childFile.isDirectory) {
+                processDirectory(childFile, fileContents, project, addExtraLine)
+            } else {
+                processFile(childFile, fileContents, project, addExtraLine)
+            }
+            directoryContent.append(content)
         }
+
+        return directoryContent.toString()
     }
 
     private fun notifyFileLimitReached(limit: Int, project: Project) {
-        JOptionPane.showMessageDialog(null, "[$project] The file limit of $limit files to have their content copied was reached. To change that just go to the plugin settings page.", "Limit Reached", JOptionPane.WARNING_MESSAGE)
+        JOptionPane.showMessageDialog(
+            null,
+            "[$project] The file limit of $limit files to have their content copied was reached. To change that just go to the plugin settings page.",
+            "Limit Reached",
+            JOptionPane.WARNING_MESSAGE
+        )
     }
 
     private fun copyToClipboard(text: String) {

@@ -4,23 +4,42 @@ import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.ui.IdeBorderFactory
+import com.intellij.ui.JBColor
 import com.intellij.ui.components.*
 import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.FormBuilder
 import com.intellij.util.ui.JBUI
-import java.awt.BorderLayout
-import java.awt.Dimension
-import java.awt.FlowLayout
-import java.awt.Insets
+import java.awt.*
 import java.awt.event.ActionListener
 import javax.swing.*
 import javax.swing.table.DefaultTableModel
+import com.intellij.ui.RoundedLineBorder;
 
 class CopyFileContentConfigurable(private val project: Project) : Configurable {
     private var settings: CopyFileContentSettings? = null
-    private val headerFormatArea = JBTextArea(4, 20)
-    private val preTextArea = JBTextArea(4, 20)
-    private val postTextArea = JBTextArea(4, 20)
+    private val headerFormatArea = JBTextArea(4, 20).apply {
+        border = JBUI.Borders.merge(
+            JBUI.Borders.empty(5),
+            RoundedLineBorder(JBColor.LIGHT_GRAY, 4, 1),
+            true
+        )
+    }
+
+    private val preTextArea = JBTextArea(4, 20).apply {
+        border = JBUI.Borders.merge(
+            JBUI.Borders.empty(5),
+            RoundedLineBorder(JBColor.LIGHT_GRAY, 4, 1),
+            true
+        )
+    }
+
+    private val postTextArea = JBTextArea(4, 20).apply {
+        border = JBUI.Borders.merge(
+            JBUI.Borders.empty(5),
+            RoundedLineBorder(JBColor.LIGHT_GRAY, 4, 1),
+            true
+        )
+    }
     private val extraLineCheckBox = JBCheckBox("Add an extra line between files")
     private val setMaxFilesCheckBox = JBCheckBox("Set maximum number of files to have their content copied")
     private val maxFilesField = JBTextField(10)

@@ -1,6 +1,6 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 
     <id>com.github.mwguerra.copyfilecontent</id>
     <depends>com.intellij.modules.platform</depends>
@@ -26,6 +26,14 @@
     </ul>
     ]]>
     </description>
+
+    <change-notes><![CDATA[
+    <h2>Bug Fixes</h2>
+    <ul>
+      <li>Fixed: Correct computation of total lines, words, characters, and tokens when selecting directories.</li>
+    </ul>
+    ]]>
+    </change-notes>
 
     <extensions defaultExtensionNs="com.intellij">
         <projectConfigurable
