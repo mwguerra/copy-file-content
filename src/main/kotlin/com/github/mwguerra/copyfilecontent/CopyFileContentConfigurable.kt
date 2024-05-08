@@ -52,6 +52,16 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
         isOpaque = true
         isVisible = false
     }
+    private val infoLabel = JLabel("<html><b>Info:</b> Please add file extensions to the table above.</html>").apply {
+        foreground = JBColor(0x31708F, 0x31708F)
+        background = JBColor(0xD9EDF7, 0xD9EDF7)
+        border = JBUI.Borders.compound(
+            JBUI.Borders.empty(5),
+            BorderFactory.createLineBorder(JBColor(0xBCE8F1, 0xBCE8F1))
+        )
+        isOpaque = true
+        isVisible = false
+    }
     private val showNotificationCheckBox = JBCheckBox("Show notification after copying")
     private val useFilenameFiltersCheckBox = JBCheckBox("Enable file extension filtering")
     private val tableModel = DefaultTableModel()
@@ -72,7 +82,12 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
 
         useFilenameFiltersCheckBox.addActionListener {
             filenameFiltersPanel.isVisible = useFilenameFiltersCheckBox.isSelected
+            updateInfoLabelVisibility()
         }
+    }
+
+    private fun updateInfoLabelVisibility() {
+        infoLabel.isVisible = useFilenameFiltersCheckBox.isSelected && tableModel.rowCount == 0
     }
 
     private fun setupTable() {
@@ -84,6 +99,7 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
             val extension = Messages.showInputDialog("Enter file extension:", "Add Filter", null)
             if (!extension.isNullOrBlank()) {
                 tableModel.addRow(arrayOf(extension.trim()))
+                updateInfoLabelVisibility()
             }
         }
 
@@ -91,6 +107,7 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
             val selectedRow = table.selectedRow
             if (selectedRow != -1) {
                 tableModel.removeRow(selectedRow)
+                updateInfoLabelVisibility()
             }
         }
     }
@@ -101,6 +118,7 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
         maxFilesField.isVisible = setMaxFilesCheckBox.isSelected
         warningLabel.isVisible = !setMaxFilesCheckBox.isSelected
         filenameFiltersPanel.isVisible = useFilenameFiltersCheckBox.isSelected
+        infoLabel.isVisible = useFilenameFiltersCheckBox.isSelected && tableModel.rowCount == 0
 
         return FormBuilder.createFormBuilder()
             .addComponentFillVertically(createSection("Text structure of what's going to the clipboard") {
@@ -113,6 +131,7 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
                 it.add(createInlinePanel(createWrappedCheckBoxPanel(setMaxFilesCheckBox), maxFilesField))
                 it.add(createInlinePanel(JLabel(), warningLabel))
                 it.add(createInlinePanel(createWrappedCheckBoxPanel(useFilenameFiltersCheckBox), filenameFiltersPanel))
+                it.add(createInlinePanel(JLabel(), infoLabel))
             }, 0)
             .addComponentFillVertically(createSection("Information on what has been copied") {
                 it.add(showNotificationCheckBox)
@@ -307,6 +326,7 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
             maxFilesField.isVisible = it.state.setMaxFileCount
             warningLabel.isVisible = !it.state.setMaxFileCount
             filenameFiltersPanel.isVisible = it.state.useFilenameFilters
+            updateInfoLabelVisibility()
         }
     }
 }
