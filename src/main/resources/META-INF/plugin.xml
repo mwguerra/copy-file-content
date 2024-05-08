@@ -1,6 +1,6 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <version>0.0.2</version>
+    <version>0.1.0</version>
 
     <id>com.github.mwguerra.copyfilecontent</id>
     <depends>com.intellij.modules.platform</depends>
@@ -36,6 +36,8 @@
     </change-notes>
 
     <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="Copy File Content" displayType="BALLOON" isLogByDefault="true" />
+
         <projectConfigurable
             id="CopyFileContentConfigurable"
             displayName="Copy File Content Settings"
