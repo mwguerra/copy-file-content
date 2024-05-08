@@ -10,10 +10,9 @@ import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.FormBuilder
 import com.intellij.util.ui.JBUI
 import java.awt.*
-import java.awt.event.ActionListener
 import javax.swing.*
 import javax.swing.table.DefaultTableModel
-import com.intellij.ui.RoundedLineBorder;
+import com.intellij.ui.RoundedLineBorder
 
 class CopyFileContentConfigurable(private val project: Project) : Configurable {
     private var settings: CopyFileContentSettings? = null
@@ -43,6 +42,16 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
     private val extraLineCheckBox = JBCheckBox("Add an extra line between files")
     private val setMaxFilesCheckBox = JBCheckBox("Set maximum number of files to have their content copied")
     private val maxFilesField = JBTextField(10)
+    private val warningLabel = JLabel("<html><b>Warning:</b> Not setting a maximum number of files may cause high memory usage.</html>").apply {
+        foreground = JBColor(0xA94442, 0xA94442)
+        background = JBColor(0xF2DEDE, 0xF2DEDE)
+        border = JBUI.Borders.compound(
+            JBUI.Borders.empty(5),
+            BorderFactory.createLineBorder(JBColor(0xEBCCD1, 0xEBCCD1))
+        )
+        isOpaque = true
+        isVisible = false
+    }
     private val showNotificationCheckBox = JBCheckBox("Show notification after copying")
     private val useFilenameFiltersCheckBox = JBCheckBox("Enable file extension filtering")
     private val tableModel = DefaultTableModel()
@@ -56,7 +65,9 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
         setupTable()
 
         setMaxFilesCheckBox.addActionListener {
-            maxFilesField.isVisible = setMaxFilesCheckBox.isSelected
+            val maxFilesSelected = setMaxFilesCheckBox.isSelected
+            maxFilesField.isVisible = maxFilesSelected
+            warningLabel.isVisible = !maxFilesSelected
         }
 
         useFilenameFiltersCheckBox.addActionListener {
@@ -88,10 +99,11 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
         settings = CopyFileContentSettings.getInstance(project)
 
         maxFilesField.isVisible = setMaxFilesCheckBox.isSelected
+        warningLabel.isVisible = !setMaxFilesCheckBox.isSelected
         filenameFiltersPanel.isVisible = useFilenameFiltersCheckBox.isSelected
 
         return FormBuilder.createFormBuilder()
-            .addComponentFillVertically(createSection("Text structure of whats going to the clipboard") {
+            .addComponentFillVertically(createSection("Text structure of what's going to the clipboard") {
                 it.add(createLabeledPanel("Pre Text:", preTextArea), BorderLayout.NORTH)
                 it.add(createLabeledPanel("File Header Format:", headerFormatArea), BorderLayout.CENTER)
                 it.add(createLabeledPanel("Post Text:", postTextArea), BorderLayout.SOUTH)
@@ -99,9 +111,10 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
             }, 0)
             .addComponentFillVertically(createSection("Constraints for copying") {
                 it.add(createInlinePanel(createWrappedCheckBoxPanel(setMaxFilesCheckBox), maxFilesField))
+                it.add(createInlinePanel(JLabel(), warningLabel))
                 it.add(createInlinePanel(createWrappedCheckBoxPanel(useFilenameFiltersCheckBox), filenameFiltersPanel))
             }, 0)
-            .addComponentFillVertically(createSection("Information on what have been copied") {
+            .addComponentFillVertically(createSection("Information on what has been copied") {
                 it.add(showNotificationCheckBox)
             }, 0)
             .panel
@@ -292,6 +305,7 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
                 tableModel.addRow(arrayOf(filter))
             }
             maxFilesField.isVisible = it.state.setMaxFileCount
+            warningLabel.isVisible = !it.state.setMaxFileCount
             filenameFiltersPanel.isVisible = it.state.useFilenameFilters
         }
     }
