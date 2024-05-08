@@ -28,9 +28,16 @@
     </description>
 
     <change-notes><![CDATA[
+    <h2>Features</h2>
+    <ul>
+      <li>Replaced summary dialog with a notification popper and improved notifications.</li>
+      <li>Added file limit info to summary window when the limit is reached.</li>
+      <li>Showed a warning message when the max files limit is not set.</li>
+      <li>Added an info message to guide users to add file extensions for filtering.</li>
+    </ul>
     <h2>Bug Fixes</h2>
     <ul>
-      <li>Fixed: Correct computation of total lines, words, characters, and tokens when selecting directories.</li>
+      <li>Prevented files from being copied multiple times.</li>
     </ul>
     ]]>
     </change-notes>
