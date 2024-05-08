@@ -1,17 +1,20 @@
 package com.github.mwguerra.copyfilecontent
 
+import com.intellij.notification.NotificationAction
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileTypes.FileTypeManager
+import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VfsUtil
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
-import javax.swing.JOptionPane
 
 class CopyFileContentAction : AnAction() {
     private var fileCount = 0
@@ -27,15 +30,15 @@ class CopyFileContentAction : AnAction() {
         var totalTokens = 0
 
         val project = e.project ?: run {
-            JOptionPane.showMessageDialog(null, "No project found. Action cannot proceed.", "Error", JOptionPane.ERROR_MESSAGE)
+            showNotification("No project found. Action cannot proceed.", NotificationType.ERROR, null)
             return
         }
         val selectedFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY) ?: run {
-            JOptionPane.showMessageDialog(null, "No files selected.", "Error", JOptionPane.ERROR_MESSAGE)
+            showNotification("No files selected.", NotificationType.ERROR, project)
             return
         }
         val settings = CopyFileContentSettings.getInstance(project) ?: run {
-            JOptionPane.showMessageDialog(null, "Failed to load settings.", "Error", JOptionPane.ERROR_MESSAGE)
+            showNotification("Failed to load settings.", NotificationType.ERROR, project)
             return
         }
 
@@ -65,18 +68,32 @@ class CopyFileContentAction : AnAction() {
         fileContents.add(settings.state.postText)
         copyToClipboard(fileContents.joinToString(separator = "\n"))
 
+        if (fileLimitReached) {
+            val fileLimitWarningMessage = """
+                <html>
+                <b>File Limit Reached:</b> The file limit of ${settings.state.fileCountLimit} files was reached.
+                </html>
+            """.trimIndent()
+            showNotificationWithSettingsAction(fileLimitWarningMessage, NotificationType.WARNING, project)
+        }
+
         if (settings.state.showCopyNotification) {
-            val fileLimitMessage = if (fileLimitReached) {
-                "\n(Note: File limit of ${settings.state.fileCountLimit} files was reached.)"
-            } else {
-                ""
+            val fileCountMessage = when (fileCount) {
+                1 -> "1 file copied."
+                else -> "$fileCount files copied."
             }
-            JOptionPane.showMessageDialog(
-                null,
-                "Copied $fileCount files.\nTotal characters: $totalChars\nTotal lines: $totalLines\nTotal words: $totalWords\nEstimated tokens: $totalTokens$fileLimitMessage",
-                "Copy Summary",
-                JOptionPane.INFORMATION_MESSAGE
-            )
+
+            val statisticsMessage = """
+                <html>
+                Total characters: $totalChars<br>
+                Total lines: $totalLines<br>
+                Total words: $totalWords<br>
+                Estimated tokens: $totalTokens
+                </html>
+            """.trimIndent()
+
+            showNotification("<html><b>$fileCountMessage</b></html>", NotificationType.INFORMATION, project)
+            showNotification(statisticsMessage, NotificationType.INFORMATION, project)
         }
     }
 
@@ -120,7 +137,10 @@ class CopyFileContentAction : AnAction() {
         val settings = CopyFileContentSettings.getInstance(project) ?: return ""
 
         for (childFile in directory.children) {
-            if (settings.state.setMaxFileCount && fileCount >= settings.state.fileCountLimit) break
+            if (settings.state.setMaxFileCount && fileCount >= settings.state.fileCountLimit) {
+                fileLimitReached = true
+                break
+            }
             val content = if (childFile.isDirectory) {
                 processDirectory(childFile, fileContents, project, addExtraLine)
             } else {
@@ -154,5 +174,21 @@ class CopyFileContentAction : AnAction() {
     private fun getRepositoryRoot(project: Project): VirtualFile? {
         val projectRootManager = ProjectRootManager.getInstance(project)
         return projectRootManager.contentRoots.firstOrNull()
+    }
+
+    private fun showNotification(message: String, notificationType: NotificationType, project: Project?): com.intellij.notification.Notification {
+        val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("Copy File Content")
+        val notification = notificationGroup.createNotification(message, notificationType).setImportant(true)
+        notification.notify(project)
+        return notification
+    }
+
+    private fun showNotificationWithSettingsAction(message: String, notificationType: NotificationType, project: Project?) {
+        val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("Copy File Content")
+        val notification = notificationGroup.createNotification(message, notificationType).setImportant(true)
+        notification.addAction(NotificationAction.createSimple("Go to Settings") {
+            ShowSettingsUtil.getInstance().showSettingsDialog(project, "Copy File Content Settings")
+        })
+        notification.notify(project)
     }
 }
