@@ -28,6 +28,7 @@ class CopyFileContentAction : AnAction() {
         var totalLines = 0
         var totalWords = 0
         var totalTokens = 0
+        val copiedFilePaths = mutableSetOf<String>()
 
         val project = e.project ?: run {
             showNotification("No project found. Action cannot proceed.", NotificationType.ERROR, null)
@@ -54,9 +55,9 @@ class CopyFileContentAction : AnAction() {
             }
 
             val content = if (file.isDirectory) {
-                processDirectory(file, fileContents, project, settings.state.addExtraLineBetweenFiles)
+                processDirectory(file, fileContents, copiedFilePaths, project, settings.state.addExtraLineBetweenFiles)
             } else {
-                processFile(file, fileContents, project, settings.state.addExtraLineBetweenFiles)
+                processFile(file, fileContents, copiedFilePaths, project, settings.state.addExtraLineBetweenFiles)
             }
 
             totalChars += content.length
@@ -92,8 +93,8 @@ class CopyFileContentAction : AnAction() {
                 </html>
             """.trimIndent()
 
-            showNotification("<html><b>$fileCountMessage</b></html>", NotificationType.INFORMATION, project)
             showNotification(statisticsMessage, NotificationType.INFORMATION, project)
+            showNotification("<html><b>$fileCountMessage</b></html>", NotificationType.INFORMATION, project)
         }
     }
 
@@ -103,10 +104,19 @@ class CopyFileContentAction : AnAction() {
         return words.size + punctuation
     }
 
-    private fun processFile(file: VirtualFile, fileContents: MutableList<String>, project: Project, addExtraLine: Boolean): String {
+    private fun processFile(file: VirtualFile, fileContents: MutableList<String>, copiedFilePaths: MutableSet<String>, project: Project, addExtraLine: Boolean): String {
         val settings = CopyFileContentSettings.getInstance(project) ?: return ""
         val repositoryRoot = getRepositoryRoot(project)
-        val fileRelativePath = repositoryRoot?.let { root -> VfsUtil.getRelativePath(file, root, '/') } ?: file.name
+        val fileRelativePath = repositoryRoot?.let { root -> VfsUtil.getRelativePath(file, root, '/') } ?: file.path
+
+        // Skip already copied files
+        if (fileRelativePath in copiedFilePaths) {
+            logger.info("Skipping already copied file: $fileRelativePath")
+            return ""
+        }
+
+        copiedFilePaths.add(fileRelativePath)
+
         var content = ""
 
         // If filename filters are enabled and the file extension does not match any filter, return early
@@ -123,7 +133,7 @@ class CopyFileContentAction : AnAction() {
             fileContents.add(header)
             fileContents.add(content)
             fileCount++
-            if (addExtraLine) {
+            if (addExtraLine && content.isNotEmpty()) {
                 fileContents.add("")
             }
         } else {
@@ -132,7 +142,7 @@ class CopyFileContentAction : AnAction() {
         return content
     }
 
-    private fun processDirectory(directory: VirtualFile, fileContents: MutableList<String>, project: Project, addExtraLine: Boolean): String {
+    private fun processDirectory(directory: VirtualFile, fileContents: MutableList<String>, copiedFilePaths: MutableSet<String>, project: Project, addExtraLine: Boolean): String {
         val directoryContent = StringBuilder()
         val settings = CopyFileContentSettings.getInstance(project) ?: return ""
 
@@ -142,11 +152,13 @@ class CopyFileContentAction : AnAction() {
                 break
             }
             val content = if (childFile.isDirectory) {
-                processDirectory(childFile, fileContents, project, addExtraLine)
+                processDirectory(childFile, fileContents, copiedFilePaths, project, addExtraLine)
             } else {
-                processFile(childFile, fileContents, project, addExtraLine)
+                processFile(childFile, fileContents, copiedFilePaths, project, addExtraLine)
             }
-            directoryContent.append(content)
+            if (content.isNotEmpty()) {
+                directoryContent.append(content)
+            }
         }
 
         return directoryContent.toString()
