@@ -15,10 +15,12 @@ import javax.swing.JOptionPane
 
 class CopyFileContentAction : AnAction() {
     private var fileCount = 0
+    private var fileLimitReached = false
     private val logger = Logger.getInstance(CopyFileContentAction::class.java)
 
     override fun actionPerformed(e: AnActionEvent) {
         fileCount = 0
+        fileLimitReached = false
         var totalChars = 0
         var totalLines = 0
         var totalWords = 0
@@ -44,7 +46,7 @@ class CopyFileContentAction : AnAction() {
         for (file in selectedFiles) {
             // Check file limit only if the checkbox is selected.
             if (settings.state.setMaxFileCount && fileCount >= settings.state.fileCountLimit) {
-                notifyFileLimitReached(settings.state.fileCountLimit, project)
+                fileLimitReached = true
                 break
             }
 
@@ -64,9 +66,14 @@ class CopyFileContentAction : AnAction() {
         copyToClipboard(fileContents.joinToString(separator = "\n"))
 
         if (settings.state.showCopyNotification) {
+            val fileLimitMessage = if (fileLimitReached) {
+                "\n(Note: File limit of ${settings.state.fileCountLimit} files was reached.)"
+            } else {
+                ""
+            }
             JOptionPane.showMessageDialog(
                 null,
-                "Copied $fileCount files.\nTotal characters: $totalChars\nTotal lines: $totalLines\nTotal words: $totalWords\nEstimated tokens: $totalTokens",
+                "Copied $fileCount files.\nTotal characters: $totalChars\nTotal lines: $totalLines\nTotal words: $totalWords\nEstimated tokens: $totalTokens$fileLimitMessage",
                 "Copy Summary",
                 JOptionPane.INFORMATION_MESSAGE
             )
@@ -123,15 +130,6 @@ class CopyFileContentAction : AnAction() {
         }
 
         return directoryContent.toString()
-    }
-
-    private fun notifyFileLimitReached(limit: Int, project: Project) {
-        JOptionPane.showMessageDialog(
-            null,
-            "[$project] The file limit of $limit files to have their content copied was reached. To change that just go to the plugin settings page.",
-            "Limit Reached",
-            JOptionPane.WARNING_MESSAGE
-        )
     }
 
     private fun copyToClipboard(text: String) {
