@@ -20,7 +20,7 @@ class CopyFileContentSettings : PersistentStateComponent<CopyFileContentSettings
         var filenameFilters: List<String> = listOf(),
         var addExtraLineBetweenFiles: Boolean = true,
         var setMaxFileCount: Boolean = true,
-        var showCopyNotification: Boolean = false,
+        var showCopyNotification: Boolean = true,
         var useFilenameFilters: Boolean = false
     )
 
