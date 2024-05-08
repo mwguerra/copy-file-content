@@ -13,16 +13,16 @@
     <p>The "Copy File Content" plugin enhances your workflow by allowing you to quickly copy the contents of selected files and directories to the clipboard, formatted according to customizable settings.</p>
     <h2>This plugin is useful for:</h2>
     <ul>
-        <li>developers who frequently need to share their code via chat applications</li>
-        <li>developers who needs to copy their code to build context for LLM apps like ChatGPT, Gemini or Sapiens.</li>
+        <li>Developers who frequently need to share their code via chat applications.</li>
+        <li>Developers who need to copy their code to build context for LLM apps like ChatGPT, Gemini, or Sapiens Chat.</li>
     </ul>
     <h2>Main features:</h2>
     <ul>
-        <li>Copy the content of multiple files to the clipboard</li>
-        <li>Customizable text structure, including pre-text, file header text and post-text</li>
-        <li>Configurable file copying constraint, default to 30 files, so you don't experience memory problems if your folder have more files than you anticipated</li>
-        <li>Optionally set filters to specify which file extensions should be copied.</li>
-        <li>Information on thh copied items including number of files copied, total lines, total words and an estimate over the tokens for the copied content (it consider words and some punctuations).</li>
+        <li>Copy the content of multiple files or directories to the clipboard.</li>
+        <li>Customizable text structure, including pre-text, file header text, and post-text.</li>
+        <li>Configurable file copying constraints (default is 30 files) to prevent memory issues with larger folders.</li>
+        <li>Optional file extension filters to specify which files should be copied.</li>
+        <li>Information on the copied items, including the number of files copied, total lines, total words, and an estimate of tokens (considering words and punctuation).</li>
     </ul>
     ]]>
     </description>
