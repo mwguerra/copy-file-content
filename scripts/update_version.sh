@@ -112,7 +112,7 @@ commit_version_change() {
 create_git_tag() {
     local new_version="$1"
     printf "\n# Creating git tag %s\n" "$new_version"
-    git tag "$new_version"
+    git tag -a "$new_version" -m "Release version $new_version" --force
 }
 
 # Function to push changes to origin
