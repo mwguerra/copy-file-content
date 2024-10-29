@@ -30,7 +30,7 @@
     <change-notes><![CDATA[
     <h2>Features</h2>
     <ul>
-      <li>Bump version to include all future versions.</li>
+      <li>Add a new menu item for the Rider IDE.</li>
     </ul>
     ]]>
     </change-notes>
@@ -44,8 +44,20 @@
             instance="com.github.mwguerra.copyfilecontent.CopyFileContentConfigurable"/>
     </extensions>
     <actions>
-        <action id="CopyFileContentContentsAction" class="com.github.mwguerra.copyfilecontent.CopyFileContentAction" text="Copy File Content to Clipboard" description="Copy folder and file content to the clipboard.">
-            <add-to-group group-id="CutCopyPasteGroup"  anchor="after" relative-to-action="CopyPaths"/>
+        <!-- For general IntelliJ IDEs -->
+        <action id="CopyFileContentContentsAction"
+                class="com.github.mwguerra.copyfilecontent.CopyFileContentAction"
+                text="Copy File Content to Clipboard"
+                description="Copy folder and file content to the clipboard.">
+            <add-to-group group-id="CutCopyPasteGroup" anchor="after" relative-to-action="CopyPaths"/>
+        </action>
+
+        <!-- For Rider -->
+        <action id="CopyFileContentContentsActionRider"
+                class="com.github.mwguerra.copyfilecontent.CopyFileContentAction"
+                text="Copy File Content to Clipboard"
+                description="Copy folder and file content to the clipboard.">
+            <add-to-group group-id="CopyReferencePopupGroup" anchor="after" relative-to-action="CopyPaths"/>
         </action>
     </actions>
 </idea-plugin>
