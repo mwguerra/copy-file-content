@@ -51,6 +51,12 @@
                 description="Copy folder and file content to the clipboard.">
             <add-to-group group-id="CutCopyPasteGroup" anchor="after" relative-to-action="CopyPaths"/>
         </action>
+        <action id="CopyAllOpenTabsAction"
+                class="com.github.mwguerra.copyfilecontent.CopyAllOpenTabsAction"
+                text="Copy All Open Tabs Content to Clipboard"
+                description="Copy the content of all open editor tabs to the clipboard.">
+            <add-to-group group-id="EditorTabPopupMenu" anchor="after" relative-to-action="CopyPaths"/>
+        </action>
 
         <!-- For Rider -->
         <action id="CopyFileContentContentsActionRider"
@@ -58,11 +64,6 @@
                 text="Copy File Content to Clipboard"
                 description="Copy folder and file content to the clipboard.">
             <add-to-group group-id="CopyReferencePopupGroup" anchor="after" relative-to-action="CopyPaths"/>
-        </action>
-        <action id="CopyAllOpenTabsAction"
-                class="com.github.mwguerra.copyfilecontent.CopyAllOpenTabsAction"
-                text="Copy All Open Tabs to Clipboard"
-                description="Copy the content of all open editor tabs to the clipboard.">
         </action>
     </actions>
 </idea-plugin>

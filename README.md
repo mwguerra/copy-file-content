@@ -18,7 +18,7 @@ To install the Copy File Content plugin in IntelliJ IDEA, follow these steps:
 ### Install using the IDE built-in plugin system
 
 <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "copy-file-content"</kbd> >
-  <kbd>Install</kbd>
+<kbd>Install</kbd>
 
 ### Install manually
 
@@ -35,6 +35,38 @@ Once the plugin is installed, you can use it to copy file content in the followi
 
 Settings can be found searching for `Copy File Content Settings` under `Preferences`.
 
+## Development and Testing
+
+### Requirements
+- Java is required to build and run the plugin.
+
+### Testing the UI
+To test the plugin UI in the IDE, run:
+```
+./gradlew runIde
+```
+
+### Creating a New Version and Release
+1. Update the change notes in `plugin.xml`
+2. Run the provided release script:
+```
+./release.sh
+```
+3. The script will:
+  - Ask for confirmation that you've updated the change notes
+  - Allow you to specify a new version (or use the default incremented version)
+  - Update version numbers in both `plugin.xml` and `gradle.properties`
+  - Build the project
+  - Create a git tag for the new version
+  - Optionally push changes to your repository
+
+4. After running the script, the binary will be generated at:
+```
+build/distributions/Copy_File_Content-{version}.zip
+```
+
+5. Upload this `.zip` file to the JetBrains Plugin Directory through your developer account.
+
 ## Features
 
 - **Copy Content**: Copy the content of multiple files to the clipboard.
@@ -49,11 +81,15 @@ This plugin is licensed under the [MIT License](LICENSE).
 
 ## Support
 
-For any issues or feature requests, please [open an issue](https://github.com/mwguerra/copy-file-content-plugin/issues) on GitHub.
+For any issues or feature requests, please [open an issue](https://github.com/mwguerra/copy-file-content/issues) on GitHub.
 
 ## Author
 
 This plugin is developed by Marcelo W. Guerra. You can contact the author via email at [mwguerra@gmail.com](mailto:mwguerra@gmail.com) or visit his [website](https://mwguerra.com) for more information.
+
+## Contributors
+
+For simplicity, contributors are shown on the [GitHub repository page](https://github.com/mwguerra/copy-file-content/graphs/contributors). A heartfelt thank you to all the contributors who have helped make this plugin better!
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].
