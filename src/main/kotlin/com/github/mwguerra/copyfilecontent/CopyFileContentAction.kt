@@ -1,3 +1,4 @@
+// file: src/main/kotlin/com/github/mwguerra/copyfilecontent/CopyFileContentAction.kt
 package com.github.mwguerra.copyfilecontent
 
 import com.intellij.notification.NotificationAction
@@ -11,8 +12,8 @@ import com.intellij.openapi.fileTypes.FileTypeManager
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
 
@@ -22,14 +23,6 @@ class CopyFileContentAction : AnAction() {
     private val logger = Logger.getInstance(CopyFileContentAction::class.java)
 
     override fun actionPerformed(e: AnActionEvent) {
-        fileCount = 0
-        fileLimitReached = false
-        var totalChars = 0
-        var totalLines = 0
-        var totalWords = 0
-        var totalTokens = 0
-        val copiedFilePaths = mutableSetOf<String>()
-
         val project = e.project ?: run {
             showNotification("No project found. Action cannot proceed.", NotificationType.ERROR, null)
             return
@@ -38,6 +31,20 @@ class CopyFileContentAction : AnAction() {
             showNotification("No files selected.", NotificationType.ERROR, project)
             return
         }
+
+        performCopyFilesContent(e, selectedFiles)
+    }
+
+    fun performCopyFilesContent(e: AnActionEvent, filesToCopy: Array<VirtualFile>) {
+        fileCount = 0
+        fileLimitReached = false
+        var totalChars = 0
+        var totalLines = 0
+        var totalWords = 0
+        var totalTokens = 0
+        val copiedFilePaths = mutableSetOf<String>()
+
+        val project = e.project ?: return
         val settings = CopyFileContentSettings.getInstance(project) ?: run {
             showNotification("Failed to load settings.", NotificationType.ERROR, project)
             return
@@ -47,7 +54,7 @@ class CopyFileContentAction : AnAction() {
             add(settings.state.preText)
         }
 
-        for (file in selectedFiles) {
+        for (file in filesToCopy) {
             // Check file limit only if the checkbox is selected.
             if (settings.state.setMaxFileCount && fileCount >= settings.state.fileCountLimit) {
                 fileLimitReached = true
@@ -61,7 +68,7 @@ class CopyFileContentAction : AnAction() {
             }
 
             totalChars += content.length
-            totalLines += content.count { it == '\n' } + 1  // +1 because the last line doesn't end in \n.
+            totalLines += content.count { it == '\n' } + (if (content.isNotEmpty()) 1 else 0)
             totalWords += content.split("\\s+".toRegex()).filter { it.isNotEmpty() }.size
             totalTokens += estimateTokens(content)
         }
@@ -188,11 +195,17 @@ class CopyFileContentAction : AnAction() {
         return projectRootManager.contentRoots.firstOrNull()
     }
 
-    private fun showNotification(message: String, notificationType: NotificationType, project: Project?): com.intellij.notification.Notification {
-        val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("Copy File Content")
-        val notification = notificationGroup.createNotification(message, notificationType).setImportant(true)
-        notification.notify(project)
-        return notification
+    companion object {
+        fun showNotification(
+            message: String,
+            notificationType: NotificationType,
+            project: Project?
+        ): com.intellij.notification.Notification {
+            val notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("Copy File Content")
+            val notification = notificationGroup.createNotification(message, notificationType).setImportant(true)
+            notification.notify(project)
+            return notification
+        }
     }
 
     private fun showNotificationWithSettingsAction(message: String, notificationType: NotificationType, project: Project?) {
