@@ -1,5 +1,7 @@
+
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
@@ -89,6 +91,14 @@ intellijPlatform {
         token = environment("PUBLISH_TOKEN")
         channels = properties("pluginVersion").map {
             listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" })
+        }
+    }
+
+    pluginVerification {
+        ides {
+            recommended()
+            create(IntelliJPlatformType.IntellijIdeaCommunity, "2025.2")
+            create(IntelliJPlatformType.Rider, "2025.1.5")
         }
     }
 }
