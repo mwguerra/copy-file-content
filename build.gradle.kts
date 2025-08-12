@@ -8,7 +8,7 @@ plugins {
     id("java") // Java support
     alias(libs.plugins.kotlin) // Kotlin support
     id("org.jetbrains.intellij.platform") version "2.7.1"
-//    id("org.jetbrains.intellij.platform.migration") version "2.7.1"
+//  id("org.jetbrains.intellij.platform.migration") version "2.7.1"
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
     alias(libs.plugins.kover) // Gradle Kover Plugin
@@ -27,7 +27,7 @@ repositories {
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
-//    implementation(libs.annotations)
+//  implementation(libs.annotations)
     intellijPlatform {
         val platformType = properties("platformType")
         val platformVersion = properties("platformVersion")
@@ -99,18 +99,13 @@ changelog {
     repositoryUrl = properties("pluginRepositoryUrl")
 }
 
-// Configure Gradle Kover Plugin - read more: https://github.com/Kotlin/kotlinx-kover#configuration
-koverReport {
-    defaults {
-        xml {
-            onCheck = true
-        }
-    }
-}
-
 tasks {
     wrapper {
         gradleVersion = properties("gradleVersion").get()
+    }
+
+    named("check") {
+        dependsOn(named("koverXmlReport"))
     }
 }
 
