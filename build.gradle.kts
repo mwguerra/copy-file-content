@@ -1,7 +1,6 @@
 
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
-import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
@@ -9,8 +8,7 @@ fun environment(key: String) = providers.environmentVariable(key)
 plugins {
     id("java") // Java support
     alias(libs.plugins.kotlin) // Kotlin support
-    id("org.jetbrains.intellij.platform") version "2.7.1"
-//  id("org.jetbrains.intellij.platform.migration") version "2.7.1"
+    id("org.jetbrains.intellij.platform") version "2.7.1" // IntelliJ Platform Gradle Plugin
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
     alias(libs.plugins.kover) // Gradle Kover Plugin
@@ -42,6 +40,7 @@ kotlin {
     jvmToolchain(17)
 }
 
+// Configure IntelliJ Platform Gradle Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
 intellijPlatform {
     pluginConfiguration {
         name = properties("pluginName")
@@ -97,10 +96,6 @@ intellijPlatform {
     pluginVerification {
         ides {
             recommended()
-            create(IntelliJPlatformType.IntellijIdeaCommunity, "2025.2")
-            create(IntelliJPlatformType.Rider, "2025.1.5") {
-                useInstaller = false
-            }
         }
     }
 }
