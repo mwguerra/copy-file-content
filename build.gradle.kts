@@ -98,7 +98,9 @@ intellijPlatform {
         ides {
             recommended()
             create(IntelliJPlatformType.IntellijIdeaCommunity, "2025.2")
-            create(IntelliJPlatformType.Rider, "2025.1.5")
+            create(IntelliJPlatformType.Rider, "2025.1.5") {
+                useInstaller = false
+            }
         }
     }
 }
