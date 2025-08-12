@@ -66,6 +66,7 @@ intellijPlatform {
         }
 
         val changelog = project.changelog
+        // Get the latest available change notes from the changelog file
         changeNotes = properties("pluginVersion").map { pluginVersion ->
             with(changelog) {
                 renderItem(
