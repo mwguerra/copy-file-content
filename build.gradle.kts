@@ -7,7 +7,7 @@ plugins {
     id("java") // Java support
     alias(libs.plugins.kotlin) // Kotlin support
     id("org.jetbrains.intellij.platform") version "2.7.1"
-    id("org.jetbrains.intellij.platform.migration") version "2.7.1"
+//    id("org.jetbrains.intellij.platform.migration") version "2.7.1"
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
     alias(libs.plugins.kover) // Gradle Kover Plugin
@@ -106,14 +106,22 @@ tasks {
     wrapper {
         gradleVersion = properties("gradleVersion").get()
     }
+}
 
+val runIdeForUiTests by intellijPlatformTesting.runIde.registering {
+    task {
+        jvmArgumentProviders += CommandLineArgumentProvider {
+            listOf(
+                "-Drobot-server.port=8082",
+                "-Dide.mac.message.dialogs.as.sheets=false",
+                "-Djb.privacy.policy.text=",
+                "-Djb.consents.confirmation.enabled=false"
+            )
+        }
+    }
 
-    // Configure UI tests plugin
-    // Read more: https://github.com/JetBrains/intellij-ui-test-robot
-//    runIdeForUiTests {
-//        systemProperty("robot-server.port", "8082")
-//        systemProperty("ide.mac.message.dialogs.as.sheets", "false")
-//        systemProperty("jb.privacy.policy.text", "<!--999.999-->")
-//        systemProperty("jb.consents.confirmation.enabled", "false")
-//    }
+    plugins {
+        // Automatically download and enable the robot-server plugin for this run
+        robotServerPlugin()
+    }
 }
