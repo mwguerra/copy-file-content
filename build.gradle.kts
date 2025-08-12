@@ -72,6 +72,19 @@ intellijPlatform {
             }
         }
     }
+
+    signing {
+        certificateChain = environment("CERTIFICATE_CHAIN")
+        privateKey = environment("PRIVATE_KEY")
+        password = environment("PRIVATE_KEY_PASSWORD")
+    }
+
+    publishing {
+        token = environment("PUBLISH_TOKEN")
+        channels = properties("pluginVersion").map {
+            listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" })
+        }
+    }
 }
 
 
@@ -106,21 +119,3 @@ intellijPlatform {
 //        systemProperty("jb.consents.confirmation.enabled", "false")
 //    }
 //
-//    signPlugin {
-//        certificateChain = environment("CERTIFICATE_CHAIN")
-//        privateKey = environment("PRIVATE_KEY")
-//        password = environment("PRIVATE_KEY_PASSWORD")
-//    }
-//
-//    publishPlugin {
-//        dependsOn("patchChangelog")
-//        token = environment("PUBLISH_TOKEN")
-//        // The pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
-//        // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
-//        // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-//        channels = properties("pluginVersion").map {
-//            listOf(
-//                it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" })
-//        }
-//    }
-//}
