@@ -37,6 +37,17 @@ kotlin {
     jvmToolchain(17)
 }
 
+intellijPlatform {
+    pluginConfiguration {
+        name = properties("pluginName")
+        version = properties("pluginVersion")
+
+        ideaVersion {
+            sinceBuild = properties("pluginSinceBuild")
+        }
+    }
+}
+
 //
 //// Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 //intellij {
