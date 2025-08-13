@@ -1,4 +1,3 @@
-
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
@@ -67,7 +66,7 @@ intellijPlatform {
             }
         }
 
-        val changelog = project.changelog
+        val changelog = project.changelog // local variable for configuration cache compatibility
         // Get the latest available change notes from the changelog file
         changeNotes = properties("pluginVersion").map { pluginVersion ->
             with(changelog) {
@@ -120,6 +119,8 @@ tasks {
     }
 }
 
+// Configure UI tests plugin
+// Read more: https://github.com/JetBrains/intellij-ui-test-robot
 val runIdeForUiTests by intellijPlatformTesting.runIde.registering {
     task {
         jvmArgumentProviders += CommandLineArgumentProvider {
