@@ -97,7 +97,9 @@ intellijPlatform {
         ides {
             // recommended tests across multiple versions of IntelliJ IDEA Community.
             recommended()
+
             // ide(...) is deprecated, but I cannot figure out how to use 'useInstaller = false' with create(...)
+            @Suppress("DEPRECATION")
             ide(IntelliJPlatformType.Rider, "2025.1.5", useInstaller = false)
         }
     }
