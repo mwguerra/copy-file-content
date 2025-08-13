@@ -8,6 +8,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileTypes.FileTypeManager
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
@@ -136,7 +137,8 @@ class CopyFileContentAction : AnAction() {
 
         if (!isBinaryFile(file) && file.length <= 100 * 1024) {
             val header = settings.state.headerFormat.replace("\$FILE_PATH", fileRelativePath)
-            content = readFileContents(file)
+            val document = FileDocumentManager.getInstance().getCachedDocument(file)
+            content = document?.text ?: readFileContents(file)
             fileContents.add(header)
             fileContents.add(content)
             fileCount++
