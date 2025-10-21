@@ -32,12 +32,18 @@ dependencies {
         val platformType = properties("platformType")
         val platformVersion = properties("platformVersion")
         create(platformType, platformVersion)
+
+        // Required for building and instrumenting the plugin
+        instrumentationTools()
+
+        // Required for running plugin verifier
+        pluginVerifier()
     }
 }
 
 // Set the JVM language level used to build the project.
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 // Configure IntelliJ Platform Gradle Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html

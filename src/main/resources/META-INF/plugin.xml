@@ -1,6 +1,6 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
 
     <id>com.github.mwguerra.copyfilecontent</id>
     <depends>com.intellij.modules.platform</depends>
@@ -28,9 +28,14 @@
     </description>
 
     <change-notes><![CDATA[
-    <h2>Features</h2>
+    <h2>Infrastructure Updates</h2>
     <ul>
-      <li>Add copy file content from open tabs.</li>
+      <li>Migrated to IntelliJ Platform Gradle Plugin 2.7.1</li>
+      <li>Updated Gradle to 9.0.0</li>
+      <li>Updated Kotlin to 2.2.0</li>
+      <li>Updated platform version to 2025.2</li>
+      <li>Updated JVM toolchain to 21</li>
+      <li>Updated build dependencies (Changelog, Qodana, Kover)</li>
     </ul>
     ]]>
     </change-notes>
