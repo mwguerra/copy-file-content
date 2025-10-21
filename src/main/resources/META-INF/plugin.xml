@@ -50,6 +50,7 @@
                 text="Copy File Content to Clipboard"
                 description="Copy folder and file content to the clipboard.">
             <add-to-group group-id="CutCopyPasteGroup" anchor="after" relative-to-action="CopyPaths"/>
+            <add-to-group group-id="ChangesViewPopupMenu" anchor="last"/>
         </action>
         <action id="CopyAllOpenTabsAction"
                 class="com.github.mwguerra.copyfilecontent.CopyAllOpenTabsAction"
