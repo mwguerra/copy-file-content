@@ -33,9 +33,6 @@ dependencies {
         val platformVersion = properties("platformVersion")
         create(platformType, platformVersion)
 
-        // Required for building and instrumenting the plugin
-        instrumentationTools()
-
         // Required for running plugin verifier
         pluginVerifier()
     }
@@ -101,10 +98,17 @@ intellijPlatform {
 
     pluginVerification {
         ides {
-            // recommended tests across multiple versions of IntelliJ IDEA Community.
-            recommended()
+            // Verify against specific stable IDE versions that are known to exist
+            // Note: recommended() may include unreleased versions
+            @Suppress("DEPRECATION")
+            ide(IntelliJPlatformType.IntellijIdeaCommunity, "2022.3.3")  // Minimum version
+            @Suppress("DEPRECATION")
+            ide(IntelliJPlatformType.IntellijIdeaCommunity, "2023.3.8")
+            @Suppress("DEPRECATION")
+            ide(IntelliJPlatformType.IntellijIdeaCommunity, "2024.3.7")
+            @Suppress("DEPRECATION")
+            ide(IntelliJPlatformType.IntellijIdeaCommunity, "2025.1.6")
 
-            // ide(...) is deprecated, but I cannot figure out how to use 'useInstaller = false' with create(...)
             @Suppress("DEPRECATION")
             ide(IntelliJPlatformType.Rider, "2025.1.5", useInstaller = false)
         }
