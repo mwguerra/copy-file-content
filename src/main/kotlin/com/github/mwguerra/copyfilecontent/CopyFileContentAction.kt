@@ -135,7 +135,7 @@ class CopyFileContentAction : AnAction() {
             }
         }
 
-        if (!isBinaryFile(file) && file.length <= 100 * 1024) {
+        if (!isBinaryFile(file) && file.length <= settings.state.maxFileSizeKB * 1024) {
             val header = settings.state.headerFormat.replace("\$FILE_PATH", fileRelativePath)
             // Check if the file is already loaded in-memory by the editor
             content = if (settings.state.strictMemoryRead) {

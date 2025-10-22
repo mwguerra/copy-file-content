@@ -106,6 +106,17 @@ Access settings at: <kbd>Settings/Preferences</kbd> > Search for **"Copy File Co
 - **Purpose**: Prevents excessive memory usage and clipboard overflow
 - **Recommendation**: Keep enabled for safety
 
+#### Maximum File Size (KB) ⭐ NEW in v0.1.7
+- **Default**: 500 KB
+- **Description**: Sets the maximum size (in kilobytes) for individual files to be copied
+- **Purpose**: Prevents copying very large files that could cause performance issues or memory problems
+- **Range**: Any positive integer (recommended: 100-10,000 KB)
+- **Use cases**:
+  - **500 KB** (default) - Handles most source files including large CSS/JS files
+  - **1000 KB (1 MB)** - For projects with large generated files
+  - **100 KB** - Conservative setting for better performance with large codebases
+- **Note**: Files larger than this limit are silently skipped and logged
+
 #### Enable File Extension Filtering
 - **Default**: Disabled
 - **Description**: When enabled, only copies files with specified extensions
@@ -313,16 +324,19 @@ Perfect for ChatGPT, Claude, Gemini, etc.:
 
 ---
 
-## 🆕 What's New in v0.1.6
+## 🆕 What's New in v0.1.7
 
 ### New Features
+- **Configurable File Size Limit**: Set maximum file size (KB) for copying individual files (default 500 KB, previously hardcoded to 100 KB)
+  - Allows copying larger CSS, JS, and generated files
+  - Prevents performance issues with extremely large files
+  - Fully customizable in settings
+
+### Previous Release (v0.1.6)
 - **Strict Memory Reading Mode**: Control whether files are read only when open in editor (strict) or from document cache (non-strict)
 - **VCS Integration**: Copy files from VCS Changes/Commit window and VCS Log
 - **In-Memory File Reading**: Automatically captures unsaved changes in open files
-
-### Improvements
 - Enhanced settings UI with "File Reading Behavior" section
-- Improved documentation and help text
 - Fixed action group warnings for better IDE compatibility
 
 ---

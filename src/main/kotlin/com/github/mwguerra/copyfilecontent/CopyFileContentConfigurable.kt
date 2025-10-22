@@ -42,6 +42,7 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
     private val extraLineCheckBox = JBCheckBox("Add an extra line between files")
     private val setMaxFilesCheckBox = JBCheckBox("Set maximum number of files to have their content copied")
     private val maxFilesField = JBTextField(10)
+    private val maxFileSizeField = JBTextField(10)
     private val warningLabel = JLabel("<html><b>Warning:</b> Not setting a maximum number of files may cause high memory usage.</html>").apply {
         foreground = JBColor(0xA94442, 0xA94442)
         background = JBColor(0xF2DEDE, 0xF2DEDE)
@@ -131,6 +132,7 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
             .addComponentFillVertically(createSection("Constraints for copying") {
                 it.add(createInlinePanel(createWrappedCheckBoxPanel(setMaxFilesCheckBox), maxFilesField))
                 it.add(createInlinePanel(JLabel(), warningLabel))
+                it.add(createLabeledPanel("Maximum file size (KB):", maxFileSizeField))
                 it.add(createInlinePanel(createWrappedCheckBoxPanel(useFilenameFiltersCheckBox), filenameFiltersPanel))
                 it.add(createInlinePanel(JLabel(), infoLabel))
             }, 0)
@@ -296,6 +298,7 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
                     extraLineCheckBox.isSelected != it.state.addExtraLineBetweenFiles ||
                     setMaxFilesCheckBox.isSelected != it.state.setMaxFileCount ||
                     (setMaxFilesCheckBox.isSelected && maxFilesField.text.toIntOrNull() != it.state.fileCountLimit) ||
+                    maxFileSizeField.text.toIntOrNull() != it.state.maxFileSizeKB ||
                     showNotificationCheckBox.isSelected != it.state.showCopyNotification ||
                     useFilenameFiltersCheckBox.isSelected != it.state.useFilenameFilters ||
                     strictMemoryReadCheckBox.isSelected != it.state.strictMemoryRead
@@ -311,6 +314,7 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
             it.state.addExtraLineBetweenFiles = extraLineCheckBox.isSelected
             it.state.setMaxFileCount = setMaxFilesCheckBox.isSelected
             it.state.fileCountLimit = maxFilesField.text.toIntOrNull() ?: 50
+            it.state.maxFileSizeKB = maxFileSizeField.text.toIntOrNull() ?: 500
             it.state.showCopyNotification = showNotificationCheckBox.isSelected
             it.state.useFilenameFilters = useFilenameFiltersCheckBox.isSelected
             it.state.strictMemoryRead = strictMemoryReadCheckBox.isSelected
@@ -327,6 +331,7 @@ class CopyFileContentConfigurable(private val project: Project) : Configurable {
             extraLineCheckBox.isSelected = it.state.addExtraLineBetweenFiles
             setMaxFilesCheckBox.isSelected = it.state.setMaxFileCount
             maxFilesField.text = it.state.fileCountLimit.toString()
+            maxFileSizeField.text = it.state.maxFileSizeKB.toString()
             showNotificationCheckBox.isSelected = it.state.showCopyNotification
             useFilenameFiltersCheckBox.isSelected = it.state.useFilenameFilters
             strictMemoryReadCheckBox.isSelected = it.state.strictMemoryRead

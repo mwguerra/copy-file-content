@@ -22,7 +22,8 @@ class CopyFileContentSettings : PersistentStateComponent<CopyFileContentSettings
         var setMaxFileCount: Boolean = true,
         var showCopyNotification: Boolean = true,
         var useFilenameFilters: Boolean = false,
-        var strictMemoryRead: Boolean = true  // Only read from memory if file is open in editor
+        var strictMemoryRead: Boolean = true,  // Only read from memory if file is open in editor
+        var maxFileSizeKB: Int = 500  // Maximum file size in KB to copy (default 500KB)
     )
 
     private var myState = State()

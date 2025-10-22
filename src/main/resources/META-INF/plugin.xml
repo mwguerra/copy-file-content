@@ -1,6 +1,6 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <version>0.1.6</version>
+    <version>0.1.7</version>
 
     <id>com.github.mwguerra.copyfilecontent</id>
     <depends>com.intellij.modules.platform</depends>
@@ -29,18 +29,17 @@
     </description>
 
     <change-notes><![CDATA[
-    <h2>Version 0.1.6 - New Features & Improvements</h2>
+    <h2>Version 0.1.7 - Configurable File Size Limit</h2>
     <h3>New Features</h3>
     <ul>
-      <li><b>Strict Memory Reading Mode:</b> New setting to control whether files are read from memory only when open in editor (strict) or from IntelliJ's document cache (non-strict, better performance)</li>
-      <li><b>VCS Integration:</b> Copy file content directly from VCS Changes/Commit window and VCS Log context menus</li>
-      <li><b>In-Memory File Reading:</b> Plugin now captures unsaved changes in open files automatically</li>
+      <li><b>Configurable File Size Limit:</b> Set maximum file size (KB) for copying individual files in settings (default 500 KB, previously hardcoded to 100 KB)</li>
+      <li>Allows copying larger CSS, JavaScript, and generated files that were previously skipped</li>
+      <li>Prevents performance issues with extremely large files</li>
+      <li>Fully customizable in plugin settings under "Constraints for copying"</li>
     </ul>
-    <h3>Improvements</h3>
+    <h3>Bug Fixes</h3>
     <ul>
-      <li>Enhanced settings UI with new "File Reading Behavior" section</li>
-      <li>Improved documentation and help text in settings</li>
-      <li>Fixed action group warnings for better IDE compatibility</li>
+      <li>Fixed issue where files larger than 100 KB were silently ignored</li>
     </ul>
     ]]>
     </change-notes>
