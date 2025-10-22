@@ -1,0 +1,11 @@
+<!-- Optional plugin descriptor for VCS integration -->
+<!-- This file is loaded only when com.intellij.modules.vcs is available -->
+<idea-plugin>
+    <actions>
+        <!-- Add Copy File Content action to VCS-related context menus -->
+        <reference ref="CopyFileContentContentsAction">
+            <add-to-group group-id="Vcs.Log.ContextMenu" anchor="last"/>
+            <add-to-group group-id="ChangesView.PopupMenu" anchor="last"/>
+        </reference>
+    </actions>
+</idea-plugin>
