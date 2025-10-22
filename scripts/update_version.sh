@@ -73,7 +73,7 @@ handle_git_commit() {
 update_version_plugin_xml() {
     local new_version="$1"
     printf "\n# Changing the version in the plugin.xml file"
-    sed -i '' "s/<version>.*<\/version>/<version>$new_version<\/version>/" "$PLUGIN_XML"
+    sed -i "s/<version>.*<\/version>/<version>$new_version<\/version>/" "$PLUGIN_XML"
     printf "Done."
 }
 
@@ -81,7 +81,7 @@ update_version_plugin_xml() {
 update_version_gradle_properties() {
     local new_version="$1"
     printf "\n# Changing the version in the gradle.properties file"
-    sed -i '' "s/^pluginVersion[[:space:]]*=.*/pluginVersion=$new_version/" "$GRADLE_PROPERTIES"
+    sed -i "s/^pluginVersion[[:space:]]*=.*/pluginVersion=$new_version/" "$GRADLE_PROPERTIES"
     printf "Done."
 }
 
