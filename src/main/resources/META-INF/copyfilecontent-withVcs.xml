@@ -5,7 +5,7 @@
         <!-- Add Copy File Content action to VCS-related context menus -->
         <reference ref="CopyFileContentContentsAction">
             <add-to-group group-id="Vcs.Log.ContextMenu" anchor="last"/>
-            <add-to-group group-id="ChangesView.PopupMenu" anchor="last"/>
+            <add-to-group group-id="ChangesViewPopupMenu" anchor="last"/>
         </reference>
     </actions>
 </idea-plugin>
